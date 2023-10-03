@@ -104,6 +104,7 @@ const Disperse: React.FC = () => {
 
         setInputFields(filteredInputFields);
         setErrors([]);
+        setHasDuplicates(false)
     };
 
     return (
