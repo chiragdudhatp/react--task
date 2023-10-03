@@ -4,7 +4,15 @@ import './index.css';
 const Disperse: React.FC = () => {
     const [inputFields, setInputFields] = useState(['']);
     const [errors, setErrors] = useState<string[]>([]);
-    const [hasDuplicates, setHasDuplicates] = useState(false); // New state variable
+    const [showExampleData, setShowExampleData] = useState<string[]>([
+        '0x2CB99F193549681e06C6770dDD5543812B4FaFE8=1',
+        '0x8B3392483BA26D65E331dB86D4F430E9B3814E5e 50',
+        '0xEb0D38c92deB969b689acA94D962A07515CC5204=2',
+        '0xF4aDE8368DDd835B70b625CF7E3E1Bc5791D18C1=10',
+        '0x09ae5A64465c18718a46b3aD946270BD3E5e6aaB,13'
+    ]);
+    const [hasDuplicates, setHasDuplicates] = useState(false);
+    const [isShow, setIsShow] = useState(false);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const lastInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -89,6 +97,7 @@ const Disperse: React.FC = () => {
         if (newErrors.length === 0) {
             console.log('No validation errors.');
         }
+        setIsShow(false);
     };
     const handleDuplicateAddress = () => {
         const seenAddresses = new Set<string>();
@@ -106,6 +115,10 @@ const Disperse: React.FC = () => {
         setErrors([]);
         setHasDuplicates(false)
     };
+
+    const handleShowExample = () => {
+        setIsShow(!isShow);
+    }
 
     return (
         <div className='h-auto min-h-screen w-full bg-gray-400 p-5 p-2 rounded'>
@@ -143,7 +156,7 @@ const Disperse: React.FC = () => {
                 <div className='font-medium'>
                     Separated by ',' or '='
                 </div>
-                <div className='opacity-60'>
+                <div className='opacity-60 cursor-pointer' onClick={handleShowExample}>
                     Show Example
                 </div>
             </div>
@@ -156,6 +169,17 @@ const Disperse: React.FC = () => {
                         <div onClick={handleDuplicateAddress} className='cursor-pointer'>Keep the first one</div>
                         {' | '}
                         <div onClick={handleDuplicateAddress} className='cursor-pointer'>Combine Balance</div>
+                    </div>
+                </div>
+            )}
+            {isShow && (
+                <div className="flex gap-2.5 p-5 border  border-solid rounded-lg text-white font-medium mt-5">
+                    <div >
+                        {showExampleData.map((data, index) => (
+                            <div key={index}>
+                                {data}
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
