@@ -103,6 +103,7 @@ const Disperse: React.FC = () => {
         });
 
         setInputFields(filteredInputFields);
+        setErrors([]);
     };
 
     return (
