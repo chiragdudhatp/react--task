@@ -44,16 +44,37 @@ const Disperse: React.FC = () => {
         }
     };
     const handleBackspace = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Backspace' && index !== 0 && inputFields[index] === '') {
-            const newInputFields = [...inputFields];
-            newInputFields.splice(index, 1);
-            setInputFields(newInputFields);
+        if (event.key === 'Backspace' && inputFields[index] === '') {
             if (index > 0) {
+                event.preventDefault();
+                const newInputFields = [...inputFields];
+                newInputFields.splice(index, 1);
+                setInputFields(newInputFields);
                 const prevInputRef = inputRefs.current[index - 1];
                 if (prevInputRef) {
                     prevInputRef.focus();
                 }
             }
+        }
+    };
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>, index: number) => {
+        event.preventDefault();
+        const clipboardData = event.clipboardData?.getData('text');
+
+        if (clipboardData) {
+            const clipboardLines = clipboardData.split('\n');
+            const newInputFields = [...inputFields];
+
+            // Insert the clipboard data starting from the current input field
+            for (const line of clipboardLines) {
+                if (line.trim()) {
+                    newInputFields.splice(index, 0, line.trim());
+                    index++;
+                }
+            }
+
+            setInputFields(newInputFields);
         }
     };
 
@@ -147,6 +168,7 @@ const Disperse: React.FC = () => {
                                     handleEnterPress(index, e);
                                     handleBackspace(index, e);
                                 }}
+                                onPaste={(e) => handlePaste(e, index)}
                             />
                         </div>
                     ))}
